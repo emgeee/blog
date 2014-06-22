@@ -89,3 +89,4 @@ exclude_generator:
 deploy:
   type: github
   repo: git@github.com:emgeee/blog.git
+  branch: master
