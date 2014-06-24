@@ -3,15 +3,7 @@ title: "Homebrew and Python - A tale of Installing Powerline"
 layout: "post"
 date: "2014-05-17 00:15:00"
 description: 
-blogger:
-    siteid: "74857919386821651"
-    postid: "8377757568638164778"
-    comments: "0"
 tags: [brew, vim, howto, powerline]
-author: 
-    name: "Matt Green"
-    url: "https://plus.google.com/114242571581942593905?rel=author"
-    image: "//lh5.googleusercontent.com/-XNtg5NpWxVA/AAAAAAAAAAI/AAAAAAAAAMo/P-xg9PWMok4/s512-c/photo.jpg"
 ---
 
 ### Introduction

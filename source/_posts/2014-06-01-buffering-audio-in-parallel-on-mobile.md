@@ -2,17 +2,8 @@
 title: "Buffering Audio in Parallel on Mobile with Web Audio API"
 layout: "post"
 date: "2014-06-01 04:02:00"
-updated: "2014-06-01 04:02:24"
 description: 
-blogger:
-    siteid: "74857919386821651"
-    postid: "563566782088491829"
-    comments: "0"
 tags: [mobile, hacks, web audio]
-author: 
-    name: "Matt Green"
-    url: "https://plus.google.com/114242571581942593905?rel=author"
-    image: "//lh5.googleusercontent.com/-XNtg5NpWxVA/AAAAAAAAAAI/AAAAAAAAAMo/P-xg9PWMok4/s512-c/photo.jpg"
 ---
 
 ### Introduction

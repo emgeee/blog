@@ -2,23 +2,14 @@
 title: "Livereload with Cordova and Gulp"
 layout: "post"
 date: "2014-06-12 19:33:00"
-updated: "2014-06-12 19:58:29"
 description: 
-blogger:
-    siteid: "74857919386821651"
-    postid: "2964921105419034610"
-    comments: "0"
 tags: [livereload, cordova, howto, apps, gulp]
-author: 
-    name: "Matt Green"
-    url: "https://plus.google.com/114242571581942593905?rel=author"
-    image: "//lh5.googleusercontent.com/-XNtg5NpWxVA/AAAAAAAAAAI/AAAAAAAAAMo/P-xg9PWMok4/s512-c/photo.jpg"
 ---
 
 I recently started on an [Ionic](http://ionicframework.com/)/[Cordova](http://cordova.apache.org/) app that uses [Gulp](http://gulpjs.com/) as the main build system. While I've used [Grunt](http://gruntjs.com/) several times in the past I have found Gulp to be much more of an intuitive approach and definitely easier to work with.
 
 
- ![](http://3.bp.blogspot.com/-v9Z1NslDIYA/U5oAC052K3I/AAAAAAAAAXs/V88Gf_1cOT8/s1600/gulp_cordova_livereload.png)](http://3.bp.blogspot.com/-v9Z1NslDIYA/U5oAC052K3I/AAAAAAAAAXs/V88Gf_1cOT8/s1600/gulp_cordova_livereload.png)
+ ![](http://3.bp.blogspot.com/-v9Z1NslDIYA/U5oAC052K3I/AAAAAAAAAXs/V88Gf_1cOT8/s1600/gulp_cordova_livereload.png)
 
 
 In a Cordova project, you develop the application in the **$ROOT\_DIR/www/** directory. When you build the project for ios, Cordova copies those files from that directory to **$ROOT\_DIR/platforms/ios/www** directory. In order to streamline the development process, I wanted to make use of   [livereload](http://livereload.com/) via the  [gulp-livereload](https://github.com/vohof/gulp-livereload) and [cordova-gapreload](https://github.com/fingerproof/cordova-plugin-gapreload) plugins. The basic setup is to use Gulp to watch for changes in the www/ directory and when a change is detected, copy the file to the appropriate location in the **platforms/ios/www** directory before triggering livereload. The main reason for copying files is that the gapreload plugin looks for assets served relative to the **platforms/** directory.

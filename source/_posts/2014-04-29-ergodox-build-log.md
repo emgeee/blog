@@ -3,15 +3,7 @@ title: "Ergodox Build Log"
 layout: "post"
 date: "2014-04-29 02:17:00"
 description: 
-blogger:
-    siteid: "74857919386821651"
-    postid: "2937259122341681925"
-    comments: "0"
 tags: [keyboard, ergodox]
-author: 
-    name: "Matt Green"
-    url: "https://plus.google.com/114242571581942593905?rel=author"
-    image: "//lh5.googleusercontent.com/-XNtg5NpWxVA/AAAAAAAAAAI/AAAAAAAAAMo/P-xg9PWMok4/s512-c/photo.jpg"
 ---
 
 

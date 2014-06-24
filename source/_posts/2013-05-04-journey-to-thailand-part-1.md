@@ -3,15 +3,7 @@ title: "Journey to Thailand: Part 1"
 layout: "post"
 date: "2013-05-04 01:35:00"
 description: 
-blogger:
-    siteid: "74857919386821651"
-    postid: "5847252965642779984"
-    comments: "0"
 tags: [travel, thailand]
-author: 
-    name: "Matt Green"
-    url: "https://plus.google.com/114242571581942593905?rel=author"
-    image: "//lh5.googleusercontent.com/-XNtg5NpWxVA/AAAAAAAAAAI/AAAAAAAAAMo/P-xg9PWMok4/s512-c/photo.jpg"
 location:
     name: "Bangkok, Thailand"
     latitude: "13.7278956"

@@ -3,15 +3,7 @@ title: "Journey to Thailand Part 2: Chatuchak Weekend Market"
 layout: "post"
 date: "2013-06-22 01:35:00"
 description: 
-blogger:
-    siteid: "74857919386821651"
-    postid: "9016535387081851127"
-    comments: "0"
 tags: [travel, thailand]
-author: 
-    name: "Matt Green"
-    url: "https://plus.google.com/114242571581942593905?rel=author"
-    image: "//lh5.googleusercontent.com/-XNtg5NpWxVA/AAAAAAAAAAI/AAAAAAAAAMo/P-xg9PWMok4/s512-c/photo.jpg"
 ---
 
 According to the official website, the Chatuchak market is one of the largest weekend markets in the world. It's open every Saturday and Sunday from 6am-6pm and offers a wide variety of products for sale from terribly made trinkets to surprisingly high quality clothing. Thus far, I have ventured to this market twice and although I haven't walked by every stall, I've managed to get a general idea for the kinds of things you can find there.
