@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Makeshift Notebook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Makeshift Notebook">
+<meta property="og:url" content="http://emgeee.com/blog//blog/">
+<meta property="og:site_name" content="Makeshift Notebook">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Makeshift Notebook">
+<meta name="twitter:description">
+  
+    <link rel="alternative" href="/atom.xml" title="Makeshift Notebook" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/blog/css/style.css" type="text/css">
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blog//" id="logo">Makeshift Notebook</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blog//">Home</a>
+        
+          <a class="main-nav-link" href="/blog//archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://emgeee.com/blog/"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-201406livereload-with-cordova-and-gulphtml" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/06/12/201406livereload-with-cordova-and-gulphtml/" class="article-date">
+  <time datetime="2014-06-13T02:33:00.000Z" itemprop="datePublished">Jun 12 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/livereload/">livereload</a>►<a class="article-category-link" href="/blog/categories/livereload/cordova/">cordova</a>►<a class="article-category-link" href="/blog/categories/livereload/cordova/howto/">howto</a>►<a class="article-category-link" href="/blog/categories/livereload/cordova/howto/apps/">apps</a>►<a class="article-category-link" href="/blog/categories/livereload/cordova/howto/apps/gulp/">gulp</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/06/12/201406livereload-with-cordova-and-gulphtml/">Livereload with Cordova and Gulp</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+I recently started on an <a href="http://ionicframework.com/" target="_blank" rel="external">Ionic</a>/<a href="http://cordova.apache.org/" target="_blank" rel="external">Cordova</a> app that uses <a href="http://gulpjs.com/" target="_blank" rel="external">Gulp</a> as the main build system. While I've used <a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a> several times in the past I have found Gulp to be much more of an intuitive approach and definitely easier to work with.<br><br><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-v9Z1NslDIYA/U5oAC052K3I/AAAAAAAAAXs/V88Gf_1cOT8/s1600/gulp_cordova_livereload.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;" target="_blank" rel="external"><img border="0" src="http://3.bp.blogspot.com/-v9Z1NslDIYA/U5oAC052K3I/AAAAAAAAAXs/V88Gf_1cOT8/s1600/gulp_cordova_livereload.png" height="185" width="400"></a></div><br><br>In a Cordova project, you develop the application in the <b>$ROOT_DIR/www/</b> directory. When you build the project for ios, Cordova copies those files from that directory to <b>$ROOT_DIR/platforms/ios/www</b> directory. In order to streamline the development process, I wanted to make use of &nbsp;<a href="http://livereload.com/" target="_blank" rel="external">livereload</a>&nbsp;via the&nbsp;<a href="https://github.com/vohof/gulp-livereload" target="_blank" rel="external">gulp-livereload</a>&nbsp;and <a href="https://github.com/fingerproof/cordova-plugin-gapreload" target="_blank" rel="external">cordova-gapreload</a>&nbsp;plugins. The basic setup is to use Gulp to watch for changes in the www/ directory and when a change is detected, copy the file to the appropriate location in the <b>platforms/ios/www</b> directory before triggering livereload. The main reason for copying files is that the gapreload plugin looks for assets served relative to the <b>platforms/</b> directory.<br><br>As you'd expect with any project, asset files can be numerous and the build system itself should not impose a restriction on nested folders. These requirements make manually listing files and structures an onerous task that should be avoided. Fortunately, file <a href="http://en.wikipedia.org/wiki/Glob_(programming)" target="_blank" rel="external">globbing</a> exists precisely to simplify this task. When specifying files to watch, you can use a glob pattern to match multiple files in many directories with a single expression. For example, to watch all files in the <b>www/</b> directory, you could specify a route glob as such:&nbsp;<b>www/**</b><br><br><b><span style="color: red;">Important:</span></b>&nbsp;Pretty much every JS library I've found that does any sort of route matching with globs uses the <a href="https://github.com/isaacs/minimatch" target="_blank" rel="external">minimatch</a> library. Currently this library has what I consider to be unintuitive, undocumented, and even incorrect behavior. The library does not do path normalization before matching which leads to the library not recognizing the equality of paths prefixed with the relative "./" compared to those that are not. Thus a glob specified as .<b>/www/**/*.js </b>would <b>NOT</b> match the path <b>www/app/test.js</b>. In the Gulp ecosystem at least, it seems that path names are piped between processes without the "./" so I would recommend that <b>any relative paths or globs you manually specify not have the "./" prefix.</b><br><b><br></b>Once you have Gulp setup to properly watch your asset files and copy them to the appropriate directory, the next step is to configure a basic http server to serve those assets, then trigger a livereload. I fulfilled the first requirement using the simple <a href="https://github.com/jesusabdullah/node-ecstatic" target="_blank" rel="external">ecstatic</a> module configured to serve all files from the <b>platforms/ios/www/ </b>directory on port 8000. <b>Make sure your assets are served with a very short cache time</b>. This can be done with ecstatic by specifying <b>cache: 0</b>&nbsp;in the config object.&nbsp; &nbsp;Once Gulp copies a changed file to the appropriate directory, pipe the new file to livereload to trigger the change.<br><br>The final step is to install the the Cordova plugin. From your root directory type:<br><b>cordova plugin add pro.fing.cordova.gapreload --variable SERVER_HOST="&lt;host&gt;"</b><br>where <b>&lt;host&gt;</b>&nbsp;is the is the computer the files are hosted from. If you're developing with the emulator, this would probably be <b>localhost</b>&nbsp;however you can also specify any IP &nbsp;you want meaning you can use this setup when developing with an actual device.<br><br><h3>Conclusion</h3>That's pretty much it! Now when you save a file, Gulp should automatically detect the file has changed, copy it to the platforms directory, then trigger a livereload action. You app running in the emulator should instantly receive the livereload notification, load the changed file from the server, then refresh the webview so the changes take effect.<br><br><h3>Caveats</h3>This setup has been working pretty well for me however there are some caveats that are important to mention. First of all, when using the gapreload plugin XMLHttpRequests will be subject to cross origin restrictions meaning you won't be able to make normal requests to servers that don't have CORS enabled, even if you whitelist the domain in your config.xml.<br><br><br>Below are the relevant portions of my Gulpfile.js:<br><br><script src="https://gist.github.com/emgeee/29e3f4c3674a08923c2f.js"></script>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2014/06/12/201406livereload-with-cordova-and-gulphtml/" data-id="tv5lu47ysh89rivo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-201405buffering-audio-in-parallel-on-mobilehtml" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/06/01/201405buffering-audio-in-parallel-on-mobilehtml/" class="article-date">
+  <time datetime="2014-06-01T11:02:00.000Z" itemprop="datePublished">Jun 1 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/mobile/">mobile</a>►<a class="article-category-link" href="/blog/categories/mobile/hacks/">hacks</a>►<a class="article-category-link" href="/blog/categories/mobile/hacks/web-audio/">web audio</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/06/01/201405buffering-audio-in-parallel-on-mobilehtml/">Buffering Audio in Parallel on Mobile with Web Audio API</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+<h3>Introduction</h3>The HTML audio element is pretty powerful, unfortunately, mobile browsers tend to restrict it by not letting you play more than one audio stream at once. Furthermore, these browsers will also restrict buffering multiple audio tracks making seamless audio switching difficult at best. While these restrictions are fine for most applications, some apps require many sounds to be played in quick succession. Games with sound effects are the biggest victim of this policy and the most commonly used strategy to circumvent it is to use <a href="https://hacks.mozilla.org/2012/04/html5-audio-and-audio-sprites-this-should-be-simple/" target="_blank" rel="external">audio sprites</a>. Below, I will discuss an alternate method that makes use of XMLHttpRequests and the experimental Web Audio API to buffer audio files in parallel then seamless switch between them.<br><br><br><h3>Solution</h3>The first thing we need to do is setup our Web Audio API context. Because the spec has yet to be finalized, it may be necessary to use a vendor prefix:<br><pre class="prettyprint">  if('webkitAudioContext' in window) {<br>    var myAudioContext = new webkitAudioContext();<br>  } else {<br>    var myAudioContext = new AudioContext();<br>  }</pre>Here, we simple check to see if the prefixed version exists, if not we use the non prefixed version.<br><br>The XMLHttpRequest object has received some major updates in the last few years. In addition to being able to send and receive text, it can now do the same with <a href="https://developer.mozilla.org/en-US/docs/Web/API/ArrayBuffer" target="_blank" rel="external">arraybuffers</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob" target="_blank" rel="external">blobs</a>, and documents. Using the wonderful <a href="https://github.com/caolan/async" target="_blank" rel="external">Async.js</a> library, we simultaneously download multiple audio files as arraybuffers and save them for playback later:<br><pre class="prettyprint">  var songUrls = [ /* list of song URLs to buffer */ ];<br>  var songData = [];<br><br>  async.map(songUrls, function(url, cb){<br>    request = new XMLHttpRequest();<br>    request.open('GET', url, true);<br>    request.responseType = 'arraybuffer';<br>    request.addEventListener('load', function(event){<br>      try {<br>        var request = event.target;<br>        var source = myAudioContext.createBufferSource();<br>        source.buffer = myAudioContext.createBuffer(request.response, false);<br>        return cb(null, source);<br>      } catch (err){<br>        return cb(err);<br>      }<br>    }, false);<br>    request.send();<br><br>  },function(err, result){<br>    if(err) {<br>      $('#message').text("Error Buffering: " + err);<br>      return;<br>    }<br>    songData = result;<br>  });</pre>You'll notice that once the array buffer is finished downloading we immediately create a new <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode" target="_blank" rel="external">AudioBufferSourceNode</a> and populate it with the downloaded data using the createBuffer method (bonus: the preferred way to do this step is to use the <a href="http://docs.webplatform.org/wiki/apis/webaudio/AudioContext/decodeAudioData" target="_blank" rel="external">decodeAudioData()</a>&nbsp;method because it's asynchronous and has better error handling).<br><br>At this point, we now have an array of audio buffers so let's look at how to play them back. The Web Audio API is based on the concept of nodes which allow you to channel data through various transformation functions before finally outputting it. For the sake of this tutorial, all we care about is playback so all we need to do is connect one of the buffers to the output device. We do that using the <b>connect()</b>&nbsp;method:<br><pre class="prettyprint">  songData[0].connect(myAudioContext.destination);</pre>Although we can start playing the audio now, it is not ideal to do so because audio buffers cannot be restarted. To get around this, we first clone the audio buffer we want to playback:<br><pre class="prettyprint">  source = myAudioContext.createBufferSource();<br>  source.buffer = songData[0].buffer;<br>  source.connect(myAudioContext.destination);<br>  source.start(0);</pre>Now, if we want to restart the track or switch to a new track, we can do so by calling <b>source.stop(0)</b>&nbsp;then clone the next audio buffer and start playing it.<br><br>A working implementation of this method can be found at&nbsp;<a href="http://emgeee.com/projects/web_audio_test" target="_blank" rel="external">http://emgeee.com/projects/web_audio_test</a><br><br><br><h3>Limitations</h3><div>While the method described overcome some of the limitations imposed by mobile browsers, it is still constrained by the need for some sort of user interaction before the audio can start playing. On the bright side, we can at least buffer the audio before hand so that when the user does hit play, the audio will start immediately. Normal HTML5 &lt;audio&gt; elements on mobile aren't allowed to buffer until after the user hits play.<br><br>Unlike the &lt;audio&gt; element, this method is also limited by XSS policies imposed by the browser. This means you will only be able to use it to stream media from the same domain or from a server that has CORS enabled.<br><br><br><h3>Conclusion</h3></div><div>This post describes a method for buffering audio in parallel and playing it back using the experimental Web Audio API.&nbsp;&nbsp;I expect this method will become more robust in the future as the API is further standardized across browsers. I have tested this solution on both Chrome 35 for Android and Mobile Safari running on IOS7 with great results. Unfortunately, the stock Android browser does not support Web Audio, which is particularly unfortunate because that is what is used to run hybrid Cordova apps. For those looking to target IOS exclusively, however, I see this as a viable solution.</div><div><br></div><div><br></div><h3>Useful links</h3><div><ul><li><a href="https://developer.apple.com/library/safari/documentation/audiovideo/conceptual/using_html5_audio_video/PlayingandSynthesizingSounds/PlayingandSynthesizingSounds.html" target="_blank" rel="external">https://developer.apple.com/library/safari/documentation/audiovideo/conceptual/using_html5_audio_video/PlayingandSynthesizingSounds/PlayingandSynthesizingSounds.html</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/API</a></li></ul><div><br></div></div><h3>Full Sample Code</h3><div><script src="https://gist.github.com/emgeee/44ef1c5e65fa85d85a8a.js"></script></div>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2014/06/01/201405buffering-audio-in-parallel-on-mobilehtml/" data-id="l5ueo7qjkzvycuj1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-201405homebrew-and-python-tale-of-installinghtml" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/05/17/201405homebrew-and-python-tale-of-installinghtml/" class="article-date">
+  <time datetime="2014-05-17T07:15:00.000Z" itemprop="datePublished">May 17 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/brew/">brew</a>►<a class="article-category-link" href="/blog/categories/brew/vim/">vim</a>►<a class="article-category-link" href="/blog/categories/brew/vim/howto/">howto</a>►<a class="article-category-link" href="/blog/categories/brew/vim/howto/powerline/">powerline</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/05/17/201405homebrew-and-python-tale-of-installinghtml/">Homebrew and Python - A tale of Installing Powerline</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+<h3>Introduction</h3>The other day I was attempting to install <a href="https://github.com/Lokaltog/powerline" target="_blank" rel="external">powerline</a>&nbsp;to make my Vim setup look prettier when I ran into some trouble with how my system was configured. For those who don't know, powerline is a neat status bar written in Python that provides various visual cues like what mode you are currently in. The&nbsp;<a href="https://powerline.readthedocs.org/en/latest/installation/osx.html#installation-osx" target="_blank" rel="external">instructions</a>&nbsp;for Mac told me install the package via&nbsp;<a href="https://pypi.python.org/pypi/pip" target="_blank" rel="external">pip</a>, a Python package management system. This sounded easy enough however I quickly ran into some nuanced issues that had to be resolved.<br><br><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="https://raw.github.com/Lokaltog/powerline/develop/docs/source/_static/img/pl-mode-normal.png" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img border="0" height="10" src="https://raw.github.com/Lokaltog/powerline/develop/docs/source/_static/img/pl-mode-normal.png" width="400"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Example from the Github README file</td></tr></tbody></table><br><h3>Default Python on Mac</h3><div>By default, OSX comes preinstalled with several versions of Python. Theses version are used as dependencies for various software and, in general, should not really be messed with. The executables are made available via the <b>/usr/bin</b>&nbsp;directory and should link back to <b>/System/Library/Frameworks/Python.framework/Versions/2.7/bin/</b>. This is all well and good, however, there are a few problems: firstly, the version of Python in this directory is not necessarily up to day. For me,<b>&nbsp;/usr/bin/python --version</b>&nbsp;yields version 2.7.5 while the most recent version is 2.7.6. More importantly, installing Python packages via the included version of pip require root access (<b>sudo pip install &lt;package name&gt;</b>) because packages are saved to&nbsp;<b>/Library/Python/2.7/site-packages</b>. Automatically running install scripts that are downloaded form the internet with root privileges is generally considered a possibly security risk and is something I strive to avoid at all cost.</div><div><br></div><h3>Enter Homebrew</h3><div>To rectify both these issues, I used the wonderful <a href="http://brew.sh/" target="_blank" rel="external">Homebrew</a>&nbsp;(brew) package management system. By design, brew promises to never write files outside the directory specified by <b>brew --prefix</b>&nbsp;which defaults to <b>/usr/local</b>/. Package information is saved to <b>/usr/local/Cellar </b>and executables are linked to <b>/usr/local/bin</b>. The beauty of this is that these directories don't require root privileges to write to meaning if you ever need to <b>sudo brew</b>&nbsp;anything, you're probably doing something wrong.</div><div><br></div><div>To install an updated version of python, simple enter <b>brew install python</b>. Because brew will detect you already have a version of python installed on your system, it may be necessary to run <b>brew link python</b>, which will symlink the appropriate executables to <b>/usr/local/bin</b>. Now, assuming you have <b>/usr/local/bin</b>&nbsp;in your $PATH (which you should), invoking <b>which python</b>&nbsp;should show you that you are now running the brewed version of python and <b>python --version</b>&nbsp;should now yield 2.7.6.</div><div><br></div><div><br></div><div>Rejoice! You should now have an updated version of python installed and managed by brew. <b>which pip</b>&nbsp;should also show you are running the version that accompanied the brewed python.</div><div><br></div><h3>Installing powerline</h3><div>As mentioned earlier, powerline can be installed using pip. The exact command given by <a href="https://powerline.readthedocs.org/en/latest/installation/osx.html#installation-osx" target="_blank" rel="external">the documentation</a>&nbsp;is&nbsp;<b>pip install --user git+git://github.com/Lokaltog/powerline</b>. Unfortunately, this presents an issue for brewed python. According to the brew-python documentation at&nbsp;<a href="https://github.com/Homebrew/homebrew/wiki/Homebrew-and-Python" target="_blank" rel="external">https://github.com/Homebrew/homebrew/wiki/Homebrew-and-Python</a></div><blockquote class="tr_bq"><span style="background-color: white; color: #333333; font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 25.5px;">The normal&nbsp;</span><code style="background-color: #f8f8f8; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; border: 1px solid rgb(221, 221, 221); box-sizing: border-box; color: #333333; font-family: Consolas, 'Liberation Mono', Courier, monospace; font-size: 12px; margin: 0px; padding: 0px;">pip install --user</code><span style="background-color: white; color: #333333; font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 25.5px;">&nbsp;is disabled for brewed Python. This is because of a bug in distutils, because Homebrew writes a&nbsp;</span><code style="background-color: #f8f8f8; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; border: 1px solid rgb(221, 221, 221); box-sizing: border-box; color: #333333; font-family: Consolas, 'Liberation Mono', Courier, monospace; font-size: 12px; margin: 0px; padding: 0px;">distutils.cfg</code><span style="background-color: white; color: #333333; font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 25.5px;">&nbsp;which sets the package&nbsp;</span><code style="background-color: #f8f8f8; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; border: 1px solid rgb(221, 221, 221); box-sizing: border-box; color: #333333; font-family: Consolas, 'Liberation Mono', Courier, monospace; font-size: 12px; margin: 0px; padding: 0px;">prefix</code><span style="background-color: white; color: #333333; font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 25.5px;">.</span></blockquote>Fortunately, the fix is quite simple. If you've installed python via brew, you can safely remove the <b>--user</b>&nbsp;flag, which instructs pip to install the package into the <b>~/Library/Python/&lt;x&gt;.&lt;y&gt;/lib/python/site-packages</b>/ directory. Instead, pip will install the package into&nbsp;<b>/usr/local/lib/python2.7/site-packages</b>, which shouldn't require root privileges.<br><br><h3>Configuring Vim</h3><div>The final step is to configure Vim (or whatever else you'd like to user powerline for). If, like me, you use vim or macvim installed through brew, you may have to do one last step. In order for powerline to work, Vim needs to be compiled with python support. Brew does this automatically at install time howeve, it relies on the first version of python found in the user's $PATH when the program is installed. If you did not have brew installed python at the time you installed vim or macvim, you will need to reinstall these versions using something like&nbsp;<b>brew reinstall macvim &lt;insert options like --enable-lua&gt;</b>. Vim will now be linked against the correct version of python and have access to the installed modules.</div><div><b><br></b></div><div>You should now be able to add the following lines to your vimrc file and bask in the glory of a nifty status bar</div><blockquote class="tr_bq"><pre style="background-color: white; box-sizing: border-box; color: #404040; font-family: Consolas, Monaco, monospace; font-size: 12px; line-height: 1.5; overflow: auto; padding: 12px;">python from powerline.<span class="k" style="box-sizing: border-box; font-weight: bold;">vim</span> import setup <span class="k" style="box-sizing: border-box; font-weight: bold;">as</span> powerline_setup<br>python powerline_setup<span class="p" style="box-sizing: border-box;">()</span><br>python <span class="k" style="box-sizing: border-box; font-weight: bold;">del</span> powerline_setup</pre></blockquote><br>Those are some of the things I learned while wrestling with brew and python for several hours. I have been using brew for a year or so prior to this without necessarily understanding some of the finer points of the system and no doubt had a lot of cruft on my machine as a result. Hopefully something in this post can save someone out there some time and/or headaches.
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2014/05/17/201405homebrew-and-python-tale-of-installinghtml/" data-id="6rz3chl4ptjkxy8r" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Computer-Controlling-NeoPixelshtml" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/05/13/Computer-Controlling-NeoPixelshtml/" class="article-date">
+  <time datetime="2014-05-13T09:20:00.000Z" itemprop="datePublished">May 13 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/electronics/">electronics</a>►<a class="article-category-link" href="/blog/categories/electronics/arduino/">arduino</a>►<a class="article-category-link" href="/blog/categories/electronics/arduino/alarm-clock/">alarm clock</a>►<a class="article-category-link" href="/blog/categories/electronics/arduino/alarm-clock/hardware/">hardware</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/05/13/Computer-Controlling-NeoPixelshtml/">Computer Controlling NeoPixels</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+<span style="font-family: Arial; font-size: 13px;">The other day I received a <a href="http://www.adafruit.com/category/168" target="_blank" rel="external">NeoPixel</a> strip </span><span style="font-family: Arial; font-size: 13px;">from <a href="http://adafruit.com./" target="_blank" rel="external">adafruit.com</a>.&nbsp;NeoPixels are really cool tricolor LED lights that are individual addressable and come in several form factors including strips and, rights, and matrices. As is my habit whenever I buy new electronic gadgets, my first order of business was to wire the strip to be controllable by a computer. Doing this first entails hooking up the light strip to a power source and connecting it to and Arduino, which will ultimately serve as the intermediary between the computer and the light strip.</span><br><span style="font-family: Arial; font-size: 13px;"><br></span><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-vB0HrbAX28U/U3F8hiIoNCI/AAAAAAAAAWo/575ABhunpl0/s1600/IMG_20140512_185127.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;" target="_blank" rel="external"><img border="0" src="http://1.bp.blogspot.com/-vB0HrbAX28U/U3F8hiIoNCI/AAAAAAAAAWo/575ABhunpl0/s1600/IMG_20140512_185127.jpg" height="480" width="640"></a></div><span style="font-family: Arial; font-size: 13px;"><br></span><span style="font-family: Arial; font-size: 13px;"><span id="goog_1069271578"></span><span id="goog_1069271579"></span><br></span><br><span style="font-family: Arial; font-size: x-small;">Using the wonderfully easy&nbsp;<a href="https://github.com/adafruit/Adafruit_NeoPixel" target="_blank" rel="external">NeoPixel Arduino library</a>&nbsp;with some of the provided sample code, I was able to confirm everything was wired correctly while also loosing focus temporarily due to the pretty flashing lights...</span><br><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;">Back on track.</span><br><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;">Initially, I wanted to use the the&nbsp;<a href="http://www.firmata.org/wiki/Main_Page" target="_blank" rel="external">firmata</a>&nbsp;Arduino library to facillitate the computer-&gt;NeoPixel communication, however, I quickly realized that this would not work. Firmata was designed to be able to give the computer control over the Arduino's individual I/O pins and resources including things like PWM and I2c. This means that if you want to diddle a pin several hundred times a second, you would need to have the the host computer send an individual command over USB to the Arduino to either set the pin high or set the pin low. Timing was already critical with the NeoPixel protocol and having that extra latency was just not going to work. Instead, I settled on a a very simple variable byte protocol that allows me to easily send a command to control the entire strip as one unit or toggle individual pixels as necessary. Essentially, the Arduino sits and waits for a single byte to be received over serial and depending what that byte is, will either perform an action or wait for more bytes. Currently, this solution has a limit of 252 different NeoPixels that can be controlled, by seeing as how I only have 60 hooked up, this shouldn't be a problem.</span><br><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;">The light strip can now be controlled via language that can spit bytes out over a serial port but my go-to language for these situations tends to by Python. Armed with the trust <a href="http://pyserial.sourceforge.net/" target="_blank" rel="external">pySerial</a> library, I can now add a fancy light show to any Python program I wish.</span><br><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;">This is only the beginning of this project, there is more to come!</span><br><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span><span style="font-family: Arial; font-size: x-small;"><br></span>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2014/05/13/Computer-Controlling-NeoPixelshtml/" data-id="1nkbl1g76xq18o3r" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-201404ergodox-build-loghtml" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/04/29/201404ergodox-build-loghtml/" class="article-date">
+  <time datetime="2014-04-29T09:17:00.000Z" itemprop="datePublished">Apr 29 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/keyboard/">keyboard</a>►<a class="article-category-link" href="/blog/categories/keyboard/ergodox/">ergodox</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/04/29/201404ergodox-build-loghtml/">Ergodox Build Log</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+<br><br>For anyone how hasn’t heard of the <a href="http://ergodox.org/" target="_blank" rel="external">Ergodox keyboard</a> it represents the state of the art in keyboard technology, at least if you don’t care about having a mini OLED screen embedded in each key. The Ergodox has 3 qualities that make it a keyboard unique: it’s physically separated into two halves, it adds new keys to form two distinct thumb clusters (similar to the <a href="http://www.kinesis-ergo.com/shop/advantage-for-pc-mac/" target="_blank" rel="external">Kinesis</a>), and its design is fully open source. All of these qualities combine to form a keyboard that is great for someone who regularly sits in front of a computer long enough to figure out how to actually build one -- it’s ergonomically sound and every key is reprogrammable. I ordered one off of <a href="https://www.massdrop.com/home" target="_blank" rel="external">Massdrop</a>; here’s how I built it:<br><br><br>The components arrived in a box unassembled and cushioned by bubble wrap. I opted for the cherry MX blue switches and the extended palm rest for this build. Although I would have preferred brown switches, supply issues made is so that those weren't an option in the particular drop I participated in and I wasn't in the mood to source switched myself. Besides, if I was going to assemble the keyboard anyways, I figured I could always unassembled it later (or just buy a new one).  <br><br><span style="font-family: Arial; font-size: x-small;"><br></span> <span style="font-family: Arial; font-size: 13px;"></span><br><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-7gGV__dd9IY/U1782TM65lI/AAAAAAAAAVY/8IY4pPeEAOE/s1600/IMG_20140225_193902.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img border="0" src="http://2.bp.blogspot.com/-7gGV__dd9IY/U1782TM65lI/AAAAAAAAAVY/8IY4pPeEAOE/s1600/IMG_20140225_193902.jpg" height="320" width="240"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Box 'o components</td></tr></tbody></table><div class="separator" style="clear: both; text-align: center;"></div><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-Y3eCchocE3A/U1786Gqxj_I/AAAAAAAAAVg/VmYW5qXoAmc/s1600/IMG_20140225_194000.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img border="0" src="http://3.bp.blogspot.com/-Y3eCchocE3A/U1786Gqxj_I/AAAAAAAAAVg/VmYW5qXoAmc/s1600/IMG_20140225_194000.jpg" height="240" width="320"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">The two halves of the keyboard with the extended palm rest</td></tr></tbody></table><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/--P0TUjesEy0/U1786czSrxI/AAAAAAAAAVo/4ELRN29VtJM/s1600/IMG_20140227_215522.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img border="0" src="http://3.bp.blogspot.com/--P0TUjesEy0/U1786czSrxI/AAAAAAAAAVo/4ELRN29VtJM/s1600/IMG_20140227_215522.jpg" height="240" width="320"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Everything laid out</td></tr></tbody></table><br><br>Because the build was going to require a good amount of soldering, I opted to splurge a little bit on a decent soldering iron.  I picked up a Weller WES51with adjustable temperature for around $80 on Amazon and a generic solder sucker for the occasional screwup. Because this build requires soldering surface mount diodes, I highly recommend using a quality rig and if you can get a fine solder tip, that's even better.<br><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-koxGLpIjPFk/U1787Ru2O6I/AAAAAAAAAV4/5OxWYNbfu28/s1600/IMG_20140428_171950.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;" target="_blank" rel="external"><img border="0" src="http://1.bp.blogspot.com/-koxGLpIjPFk/U1787Ru2O6I/AAAAAAAAAV4/5OxWYNbfu28/s1600/IMG_20140428_171950.jpg" height="240" width="320"></a></div><div class="separator" style="clear: both; text-align: center;"><br></div><div class="separator" style="clear: both; text-align: center;"><br></div><div class="separator" style="clear: both; text-align: center;"><br></div><div class="separator" style="clear: both; text-align: left;"><br></div><div class="separator" style="clear: both; text-align: center;"></div>The build began by soldering on a few resistors, headers, the headphone TRRS jacks, and the Teensey micro-controller that serves as the brains of the keyboard. The Ergodox PCB is designed such that both halves are actually copies of the same PCB so one arbitrary choice later, I was happily on my way to a semi-populated board. The kit contained two mini-B cables, one for connecting the keyboard to the computer, and another for connecting the Teensy micro-controller to the PCB. In order to accomplish the second task, the cable had to be cannibalized so the connector would fit into the casing. Doing so proved to be the most difficult (and dangerous) part of the entire build. I opted to slowly whittle away at the insulation with a sharp knife, however, I have heard that a Dremel is the most effective method.<br><div style="text-align: left;"><br></div><div style="text-align: left;"><br></div><div style="text-align: left;"><br></div><div style="text-align: left;"><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-5rSK1lHs0HY/U1786biMsUI/AAAAAAAAAVk/dllqd4LC7bc/s1600/IMG_20140301_152137.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img border="0" src="http://3.bp.blogspot.com/-5rSK1lHs0HY/U1786biMsUI/AAAAAAAAAVk/dllqd4LC7bc/s1600/IMG_20140301_152137.jpg" height="300" width="400"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">PCB before adding the diodes</td></tr></tbody></table></div><div style="text-align: left;"><br></div>The next part is probably the part most people have trouble with. The plans call for surface mount diodes to be painfully soldered next to each switch on the PCB. Needle tweezers are a must in this situation and I found it easiest to place a small dab of solder on one of the pads, then hold the diode over the pad while re-melting the solder and moving the diode into the proper position. Solder flux would have been very helpful in this situation however, I did not have any on hand so I opted to charge ahead without it. During this step, it's absolutely important to ensure that each diode is <b>facing the proper direction</b>. Failing to do so will render the keyboard inoperable and you will have to go back and correct each incorrect diode. For this build, the tiny grey stipe on the diode should be facing the square pad.<br><br><br>The next step is to begin mounting each switch onto acrylic frame. Because the switches included in this kit are of the plate mounted kinda, as opposed to the PCB mounted types, this step must be done before soldering them on the board. This also means that if you want to change the case, you will have to desolder every switch in order to fully liberate the PCB. These plate mounted switches tend to be more durable than the alternatives, so that's a win for stability, still, it makes me sad that once you continue past this step, you're locked into using the original acrylic case. <br><br><br>I found it best to mount and solder each of the corner switches first before filling in the middle. This makes it easier to line up the switches with their respective holes. After this step is finished, be sure to inspect your work and make sure every lead has enough solder on it and no <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems" target="_blank" rel="external">solder bridges</a> exist that could short circuit your keyboard. At this point, you should be able to connect the two halves of the keyboard and plug it into your computer. You'll have to flash the Teensy with the appropriate firmware but after doing that, you should have a fully functioning keyboard, all that's left is to finish assembling the case and installing the keycaps.<br><div><br></div><div><br></div><div><br></div><div><br></div><div><br></div><div style="text-align: center;">The end result: my fully assembled Ergodox!</div><div style="text-align: center;"><br></div><div><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-tcgCeaelnJw/U18I0h8ckEI/AAAAAAAAAWQ/FlpcAKq-tdo/s1600/IMG_20140428_190406.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img alt="Fully assembled ergodox" border="0" src="http://3.bp.blogspot.com/-tcgCeaelnJw/U18I0h8ckEI/AAAAAAAAAWQ/FlpcAKq-tdo/s1600/IMG_20140428_190406.jpg" height="480" title="Fully assembled ergodox" width="640"></a></td></tr><tr><td class="tr-caption" style="text-align: center;"><br></td></tr></tbody></table></div>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2014/04/29/201404ergodox-build-loghtml/" data-id="gqcx8f113qcqrl9y" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-201306journey-to-thailand-part-2-chatuchakhtml" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/06/22/201306journey-to-thailand-part-2-chatuchakhtml/" class="article-date">
+  <time datetime="2013-06-22T12:17:00.000Z" itemprop="datePublished">Jun 22 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/travel/">travel</a>►<a class="article-category-link" href="/blog/categories/travel/thailand/">thailand</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/06/22/201306journey-to-thailand-part-2-chatuchakhtml/">Journey to Thailand Part 2: Chatuchak Weekend Market</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+According to the official website, the Chatuchak market is one of the largest weekend markets in the world. It's open every Saturday and Sunday from 6am-6pm and offers a wide variety of products for sale from terribly made trinkets to surprisingly high quality clothing. Thus far, I have ventured to this market twice and although I haven't walked by every stall, I've managed to get a general idea for the kinds of things you can find there.<br><br>The easiest way to reach the market is by taking the BTS sky train all the way out to the Mo Chit stop. Exiting the train it becomes apparent that most everyone will also be heading to the market as it's quite a popular destination on weekends. Once you reach street level, there is the normal smorgasbord of people peddling wares. The easiest thing to do is make an immediate right into a small park that lies adjacent to the market. You can walk through this park and gain easy access to the outer stalls.<br><br><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-qDfOEK9qAtU/UaW2FqYG8nI/AAAAAAAAAOk/aryDFq3XqR8/s1600/20130518_133333.jpg" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img alt="Chatuchack signs" border="0" src="http://2.bp.blogspot.com/-qDfOEK9qAtU/UaW2FqYG8nI/AAAAAAAAAOk/aryDFq3XqR8/s200/20130518_133333.jpg" height="150" title="Chatuchack signs" width="200"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">A sign hangs over one of the entrances</td></tr></tbody></table>The market itself is arranged in rows of covered stalls that extend the entire length of the place. In between each row are streets that are crowded with people and vendors selling all manner of items. Plenty of booths lie inside each &nbsp;row and because of the large nature of the market, it is easy to become disoriented and potentially lost.<br><br>We entered the market from the east side, which is where the nicest clothes appear to be sold. Most of the places in this section don't appear willing to barter but the occasional blast of A/C from one of the stalls can be refreshing. If you're looking for cheap knock-offs, it's best to head deeper into the market.<br><br><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: right; text-align: right;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-6rBsnLsxYyw/UaW6JQeZiFI/AAAAAAAAAO0/XXXl0UI7MVU/s1600/20130428_125444.jpg" imageanchor="1" style="clear: right; margin-bottom: 1em; margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img alt="Mechanical crab sculpture" border="0" src="http://4.bp.blogspot.com/-6rBsnLsxYyw/UaW6JQeZiFI/AAAAAAAAAO0/XXXl0UI7MVU/s200/20130428_125444.jpg" height="200" title="Mechanical crab sculpture" width="150"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Not as unique as you might think</td></tr></tbody></table>One thing I noticed as I started looking at the various booths is that often times different people will be selling the exact same item. If you aren't able to negotiate a price you want for a certain item, often you can just leave and try again at a place right down the row. This gives the illusion of variety in a huge market but the amount of stalls selling unique items is substantially lower than the total amount of stalls. Even something as&nbsp;seemingly remarkable as this crab sculpture could be found at multiple stalls in the market.<br><br>While the market sells a lot of cheap consumer items, there also exists a somewhat darker side to the market. Towards the west end, there is an area where booths sell all kinds of live animals from puppies to turtles. While cute and seemingly cuddling, the puppies and kittens for sale scream "puppy mill." The place is definitely worth a walk through simply to see the somewhat unique animals on sale but be warned: it can be quite stuffy and could trigger allergies.<br><br><div class="separator" style="clear: both; text-align: center;"></div><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="clear: right; float: right; margin-bottom: 1em; margin-left: 1em; text-align: right;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-Npfzci8PcJY/UaW7aEzn1DI/AAAAAAAAAPE/jUm9BcYDvFA/s1600/20130428_112948.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img alt="bins of  tiny turtles" border="0" src="http://3.bp.blogspot.com/-Npfzci8PcJY/UaW7aEzn1DI/AAAAAAAAAPE/jUm9BcYDvFA/s400/20130428_112948.jpg" height="400" title="bins of  tiny turtles" width="300"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Many turtles in blue bins</td></tr></tbody></table><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: 1em; margin-right: 1em; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-Ov8nBDguaeI/UaW7cRUsg4I/AAAAAAAAAPM/1pkd2iCjk2U/s1600/20130428_112847.jpg" imageanchor="1" style="clear: right; margin-bottom: 1em; margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img alt="squirrels for sale" border="0" src="http://4.bp.blogspot.com/-Ov8nBDguaeI/UaW7cRUsg4I/AAAAAAAAAPM/1pkd2iCjk2U/s400/20130428_112847.jpg" height="400" title="squirrels for sale" width="300"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Squirrels for sale</td></tr></tbody></table><div class="separator" style="clear: both; text-align: left;">Overall the market is a great place to buy cheap clothes, trinkets, and other assorted crap and is definitely worth a visit. Contrary to what I've read at other places online, you probably don't need more than a few hours to really experience the market because plenty of places are really just selling the same things. As with all touristy places, be wary of pick-pockets and know that bartering is essential to getting a good deal.</div><div class="separator" style="clear: both; text-align: left;"><br></div><div class="separator" style="clear: both; text-align: left;">You can find more about the market at their website:&nbsp;<a href="http://www.chatuchak.org/" target="_blank" rel="external">http://www.chatuchak.org/</a></div>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2013/06/22/201306journey-to-thailand-part-2-chatuchakhtml/" data-id="yrbtndr3z77ssm3j" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-201305journey-to-thailand-part-1html" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/05/04/201305journey-to-thailand-part-1html/" class="article-date">
+  <time datetime="2013-05-04T12:35:00.000Z" itemprop="datePublished">May 4 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/travel/">travel</a>►<a class="article-category-link" href="/blog/categories/travel/thailand/">thailand</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/05/04/201305journey-to-thailand-part-1html/">Journey to Thailand: Part 1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+It's been a little over a week since I first touched down in Bangkok and I'd like to share some thoughts about the experience from a first-time traveler's perspective. To begin with, JFK is a terrible airport. I mean seriously, no free wifi? Also no Starbucks past the security line means I had to get my caffeine fix from something in a can. Also don't fly China Eastern. The seats were far too small and the inflight entertainment was atrocious (read: non existent). It was also a weird experience seeing people milling around in the aisles mid flight chatting in Chinese across the width of the plane. I don't feel like this behavior would have gone over too well on an American airline... oh well.<br><br>After an hour long delay in Shanghai and a flight that seemed to go on forever (you know the ones where you swear you're almost there only to realize you're 2 hours into a 4 hour flight), my friend and I touched down in Bangkok at around 4am in the morning. For whatever reason customs was the part that I was most worried about because I had absolutely no idea what to expect. Turns out expecting nothing would have been the right choice as a stamp and a smile later I was through to baggage claim.<br><br>Taxis in Thailand are a peculiar thing, or at least completely different than in America. Walking out of the airport we were hounded by private car drivers trying to get us to pay 700 baht (about $24 USD) for a car into the city. Fortunately, my somewhat more experienced comrade knew the actual price of things and we settled for a colorful cab that charged us a mere $10 USD to take us to our residence.<br><br><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-RDWdl_FmqcU/UYScXSaBvEI/AAAAAAAAANg/z63NlrhrBpw/s1600/20130504_113228.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img alt="colorful cabs in Bangkok" border="0" src="http://4.bp.blogspot.com/-RDWdl_FmqcU/UYScXSaBvEI/AAAAAAAAANg/z63NlrhrBpw/s320/20130504_113228.jpg" height="240" title="colorful cabs in Bangkok" width="320"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">The Cabs are so colorful here</td></tr></tbody></table>Some things to note about Bangkok: it's a very modern city with excellent cell service at ridiculous prices and more malls than seems reasonable. I've been to more different malls in one week in Thailand than I have over the course of the rest of my life combined. In addition, I'm told the unemployment rate is around 0.3%, which makes sense considering how many people are on the street selling goods. If you don't have a job simply set up shop on a street corner and start selling things.<br><br><h3>Transportation</h3>The city has two major metro systems, the BTS or "sky train" and the MRT which is underground. In addition, taxis are available for cheap as are scooter taxis, which are a truly dangerous adventure to use. To date, I've ridden one twice and have never gripped something as hard as I gripped the handles on the back of the seat. When riding one, it's advised to keep your knees inside the width of the handle bars or risk loosing them when your driver decides to squeeze between a moving truck and a parked car. Of course you see native Thais riding side saddle talking on their cellphones while their drivers expertly dodge death but as someone who was raised to know what a helmet is, the 20 baht price tag isn't enough to convince me to make it a regular thing. (Idea: someone should make a shirt that says "I survived a ride on a motor taxi in traffic." Seriously, jumping out of an airplane isn't as scary as swerving into oncoming traffic on the back of a Vespa)<br><br><h3>Food</h3>There's really no which way about it: the food in Thailand is cheaper and better than that in America. Bubble Tea costs a little over $1 USD, chicken and rice costs around $2, and all you can eat&nbsp;<a href="http://en.wikipedia.org/wiki/Shabu-shabu" target="_blank" rel="external">Shabu</a>&nbsp;runs slightly north of $11. If going out to eat all the time isn't really you style you can also enjoy a variety of surprisingly delicious frozen food. Buy them at the grocery store for a buck or two or at a local 7-11, where they'll even microwave it for you. Overall the food is quite delicious and available everywhere.<br><br><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-zVf7ot-cbDg/UYKUEutDOLI/AAAAAAAAANA/Mws4RaGlfrs/s1600/20130501_090147.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;" target="_blank" rel="external"><img alt="Frozen duck dinner!" border="0" src="http://1.bp.blogspot.com/-zVf7ot-cbDg/UYKUEutDOLI/AAAAAAAAANA/Mws4RaGlfrs/s320/20130501_090147.jpg" height="240" title="Frozen duck dinner!" width="320"></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Where else can you find duck as part of a $3 frozen meal?</td></tr></tbody></table><br><h3>Closing Thoughts</h3><div>Overall Thailand has been a wonderful experience thus far. I still have many more weeks to really experience it and plans to travel outside of Bangkok have already been concocted. Stay tuned to find out more about how you can use Node.js and Elastic Beanstalk to easily scale your webapps... errrr things in Thailand. I will leave you with a picture of the Bangkok skyline taken at sunset:</div><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-HV8e2LJ9NhM/UYKXwmu9-YI/AAAAAAAAANQ/jCThFo5Bj8I/s1600/20130428_184218.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;" target="_blank" rel="external"><img alt="Bangkok Skyline at sunset" border="0" src="http://4.bp.blogspot.com/-HV8e2LJ9NhM/UYKXwmu9-YI/AAAAAAAAANQ/jCThFo5Bj8I/s640/20130428_184218.jpg" height="480" title="Bangkok Skyline at sunset" width="640"></a></div><br>
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2013/05/04/201305journey-to-thailand-part-1html/" data-id="t9nbgykobwsxrc9h" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-201303testing-ascot-on-bloggerhtml" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/03/14/201303testing-ascot-on-bloggerhtml/" class="article-date">
+  <time datetime="2013-03-15T05:04:00.000Z" itemprop="datePublished">Mar 14 2013</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/03/14/201303testing-ascot-on-bloggerhtml/">Testing Ascot on Blogger</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+<iframe width="575" height="402" src="http://www.ascotproject.com/look/5140a10dbe287c8b0e000018/iframe" frameborder="0"></iframe> It seems to work!
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2013/03/14/201303testing-ascot-on-bloggerhtml/" data-id="72fit4tcqpmci3kk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-201303so-it-beginshtml" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/03/12/201303so-it-beginshtml/" class="article-date">
+  <time datetime="2013-03-12T08:35:00.000Z" itemprop="datePublished">Mar 12 2013</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/03/12/201303so-it-beginshtml/">So it begins</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="css-full-post-content js-full-post-content">
+Greetings!<br><br>I have been meaning to start a blog for sometime now about my various adventures with technology. Through it, I hope to catalog my experiences solving difficult problems and building fascinating things. My hope is that these posts will help others learn from my mistakes and find solutions to their own problems.
+</div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://emgeee.com/blog/2013/03/12/201303so-it-beginshtml/" data-id="tf7ijcxhw68hpxnj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/brew/">brew</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/brew/vim/">vim</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/brew/vim/howto/">howto</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/brew/vim/howto/powerline/">powerline</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/electronics/">electronics</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/electronics/arduino/">arduino</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/electronics/arduino/alarm-clock/">alarm clock</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/electronics/arduino/alarm-clock/hardware/">hardware</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/keyboard/">keyboard</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/keyboard/ergodox/">ergodox</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/livereload/">livereload</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/livereload/cordova/">cordova</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/livereload/cordova/howto/">howto</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/livereload/cordova/howto/apps/">apps</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/livereload/cordova/howto/apps/gulp/">gulp</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/mobile/">mobile</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/mobile/hacks/">hacks</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/mobile/hacks/web-audio/">web audio</a><span class="category-list-count">1</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/travel/">travel</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/travel/thailand/">thailand</a><span class="category-list-count">2</span></li></ul></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2014/06">June 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2014/04">April 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2013/06">June 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2013/05">May 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2013/03">March 2013</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blog/2014/06/12/201406livereload-with-cordova-and-gulphtml/">Livereload with Cordova and Gulp</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/06/01/201405buffering-audio-in-parallel-on-mobilehtml/">Buffering Audio in Parallel on Mobile with Web Audio API</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/05/17/201405homebrew-and-python-tale-of-installinghtml/">Homebrew and Python - A tale of Installing Powerline</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/05/13/Computer-Controlling-NeoPixelshtml/">Computer Controlling NeoPixels</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/04/29/201404ergodox-build-loghtml/">Ergodox Build Log</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Matt Green<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blog//" class="mobile-nav-link">Home</a>
+  
+    <a href="/blog//archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/blog/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/blog/js/script.js" type="text/javascript"></script>
+  </div>
+</body>
+</html>

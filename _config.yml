@@ -14,7 +14,7 @@ language: en
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://emgeee.com/blog/
 root: /blog/
-permalink: :year/:month/:day/:title/
+permalink: :title/
 tag_dir: tags
 archive_dir: archives
 category_dir: categories
@@ -22,10 +22,10 @@ code_dir: downloads/code
 
 # Directory
 source_dir: source
-public_dir: public
+public_dir: public/blog
 
 # Writing
-new_post_name: :title.md # File name of new posts
+new_post_name: :year-:month-:day-:title.md # File name of new posts
 default_layout: post
 auto_spacing: false # Add spaces between asian characters and western characters
 titlecase: false # Transform title into titlecase
