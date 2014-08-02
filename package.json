@@ -8,7 +8,6 @@
     "url": "https://github.com/emgeee/emgeee.github.com.git"
   },
   "author": "Matt Green",
-  "license": "MIT",
   "homepage": "emgeee.com",
   "dependencies": {
     "hexo-renderer-ejs": "*",
